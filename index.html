@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S0 — System Zero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --fg: #0a0a0a;
+      --mid: #444444;
+      --light: #888888;
+      --accent: #0a0a0a;
+      --border: #e0e0e0;
+      --mono: 'JetBrains Mono', 'Courier New', monospace;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--mono);
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ─── NAV ─────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 3rem;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    nav.scrolled {
+      border-color: var(--border);
+    }
+
+    .nav-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-decoration: none;
+      color: var(--fg);
+      display: flex;
+      align-items: baseline;
+      gap: 0.25rem;
+    }
+    .nav-logo .s0 {
+      font-size: 1.5rem;
+    }
+    .nav-logo .sep {
+      color: var(--light);
+      font-weight: 300;
+      margin: 0 0.3rem;
+    }
+    .nav-logo .full {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--light);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--mid);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--fg); }
+
+    /* ─── HERO ────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Grid background */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    /* Fade edges */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, white 100%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 860px;
+    }
+
+    /* Animated logo mark */
+    .logo-mark {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 2.5rem;
+      position: relative;
+    }
+
+    .logo-mark svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      line-height: 0.9;
+      margin-bottom: 2rem;
+    }
+
+    .hero-title .s0-big {
+      display: block;
+    }
+
+    .hero-title .system-zero {
+      display: block;
+      font-size: clamp(1rem, 3.5vw, 2.2rem);
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      color: var(--mid);
+      text-transform: uppercase;
+      margin-top: 0.4em;
+    }
+
+    .hero-sub {
+      font-size: clamp(0.85rem, 2vw, 1.05rem);
+      font-weight: 400;
+      color: var(--mid);
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Typewriter cursor */
+    .cursor {
+      display: inline-block;
+      width: 0.6em;
+      height: 1em;
+      background: var(--fg);
+      margin-left: 2px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.85rem 2rem;
+      border: 1.5px solid var(--fg);
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, transform 0.18s;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--fg);
+      transform: translateY(-2px);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--fg);
+    }
+    .btn-ghost:hover {
+      background: var(--fg);
+      color: var(--bg);
+      transform: translateY(-2px);
+    }
+
+    /* scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--light);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: fadeInUp 1s ease 1.5s both;
+    }
+    @media (max-width: 768px) {
+      .scroll-hint { display: none; }
+    }
+    .scroll-hint .arrow {
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-hint .arrow::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 1px;
+      height: 100%;
+      background: var(--fg);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    /* ─── SECTION SHARED ──────────────────────── */
+    section {
+      padding: 7rem 2rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      display: block;
+      height: 1px;
+      width: 60px;
+      background: var(--border);
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ─── MANIFESTO ───────────────────────────── */
+    .manifesto {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    .manifesto .section-label {
+      color: #888;
+    }
+    .manifesto .section-label::after {
+      background: #333;
+    }
+    .manifesto-text {
+      font-size: clamp(1.2rem, 3vw, 1.9rem);
+      font-weight: 300;
+      line-height: 1.6;
+      letter-spacing: -0.01em;
+      max-width: 800px;
+    }
+    .manifesto-text em {
+      font-style: normal;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    /* State machine animation in manifesto */
+    .state-viz {
+      margin-top: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .state-node {
+      width: 56px;
+      height: 56px;
+      border: 1.5px solid #333;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #888;
+      transition: all 0.4s;
+      position: relative;
+    }
+    .state-node.active {
+      border-color: #fff;
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255,255,255,0.15);
+    }
+    .state-node.s0 {
+      border-color: #fff;
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+    }
+    .state-arrow {
+      color: #333;
+      font-size: 0.8rem;
+      margin: 0 0.25rem;
+      transition: color 0.4s;
+    }
+    .state-arrow.active { color: #888; }
+
+    /* ─── CAPABILITIES ────────────────────────── */
+    .caps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0;
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    .cap-item {
+      padding: 2.5rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s;
+    }
+    .cap-item:hover {
+      background: #f8f8f8;
+    }
+    .cap-item:hover .cap-icon {
+      transform: scale(1.08) rotate(-3deg);
+    }
+
+    .cap-number {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--light);
+      margin-bottom: 1.5rem;
+    }
+    .cap-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .cap-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+    .cap-desc {
+      font-size: 0.78rem;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* ─── PLATFORMS ───────────────────────────── */
+    .platforms {
+      background: #fafafa;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .platforms-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+      margin-bottom: 5rem;
+    }
+
+    .platforms-desc {
+      font-size: 0.85rem;
+      color: var(--mid);
+      line-height: 1.9;
+    }
+
+    .platform-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      background: white;
+    }
+
+    .platform-item {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      transition: background 0.15s, padding-left 0.2s;
+      cursor: default;
+    }
+    .platform-item:last-child { border-bottom: none; }
+    .platform-item:hover {
+      background: var(--fg);
+      color: var(--bg);
+      padding-left: 2rem;
+    }
+    .platform-item:hover .platform-tag {
+      color: #888;
+    }
+
+    .platform-icon { font-size: 1.2rem; }
+    .platform-name { font-weight: 700; flex: 1; letter-spacing: -0.02em; }
+    .platform-tag {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--light);
+      transition: color 0.15s;
+    }
+
+    /* ─── DOMAINS ─────────────────────────────── */
+    .domains-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .domain-card {
+      padding: 2rem;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .domain-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--fg);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .domain-card:hover {
+      border-color: #ccc;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .domain-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .domain-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .domain-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .domain-desc {
+      font-size: 0.78rem;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* ─── APPROACH ────────────────────────────── */
+    .approach {
+      border-top: 1px solid var(--border);
+    }
+
+    .approach-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .approach-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.75rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+      transition: padding-left 0.2s;
+      cursor: default;
+    }
+    .step:first-child { padding-top: 0; }
+    .step:hover { padding-left: 0.5rem; }
+
+    .step-num {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: var(--light);
+      padding-top: 0.15rem;
+      min-width: 2.5rem;
+    }
+    .step-content {}
+    .step-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
+    }
+    .step-desc {
+      font-size: 0.78rem;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+
+    /* ASCII robot */
+    .ascii-block {
+      font-family: var(--mono);
+      font-size: clamp(0.55rem, 1.2vw, 0.72rem);
+      line-height: 1.4;
+      color: var(--mid);
+      white-space: pre;
+      letter-spacing: 0.05em;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      animation: float 6s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+    .ascii-block::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 60%, rgba(250,250,250,0.9) 100%);
+      pointer-events: none;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* ─── FLEET visualization ─────────────────── */
+    .fleet-section {
+      background: var(--fg);
+      color: var(--bg);
+      overflow: hidden;
+    }
+    .fleet-section .section-label {
+      color: #888;
+    }
+    .fleet-section .section-label::after {
+      background: #333;
+    }
+    .fleet-section .section-title { color: var(--bg); }
+
+    .fleet-canvas-wrapper {
+      margin-top: 3rem;
+      border: 1px solid #222;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #fleetCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .fleet-desc {
+      margin-top: 2rem;
+      font-size: 0.82rem;
+      color: #888;
+      line-height: 1.8;
+      max-width: 640px;
+    }
+
+    /* ─── CTA ─────────────────────────────────── */
+    .cta-section {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .cta-section .section-title {
+      max-width: 640px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .cta-sub {
+      font-size: 0.85rem;
+      color: var(--mid);
+      margin-bottom: 2.5rem;
+    }
+
+    .cta-email {
+      font-size: 0.72rem;
+      color: var(--light);
+      letter-spacing: 0.1em;
+      margin-top: 2rem;
+    }
+    .cta-email a {
+      color: var(--fg);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .cta-email a:hover { border-color: var(--fg); }
+
+    /* ─── FOOTER ──────────────────────────────── */
+    footer {
+      padding: 2.5rem 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .footer-copy {
+      font-size: 0.65rem;
+      color: var(--light);
+      letter-spacing: 0.1em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.65rem;
+      color: var(--light);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--fg); }
+
+    /* ─── ANIMATIONS ──────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    .hero-inner > * {
+      animation: fadeInUp 0.8s ease both;
+    }
+    .hero-inner > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-inner > *:nth-child(2) { animation-delay: 0.2s; }
+    .hero-inner > *:nth-child(3) { animation-delay: 0.35s; }
+    .hero-inner > *:nth-child(4) { animation-delay: 0.5s; }
+    .hero-inner > *:nth-child(5) { animation-delay: 0.65s; }
+
+    /* ─── RESPONSIVE ──────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+
+      section { padding: 5rem 1.5rem; }
+
+      .platforms-intro {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .approach-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      footer {
+        flex-direction: column;
+        padding: 2rem 1.5rem;
+        text-align: center;
+      }
+    }
+
+    /* ─── TYPING INDICATOR ────────────────────── */
+    .typing-line {
+      font-size: 0.75rem;
+      color: var(--light);
+      letter-spacing: 0.08em;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      height: 1.4rem;
+    }
+    .typing-line .prompt { color: var(--fg); font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <span class="s0">S0</span>
+    <span class="sep">/</span>
+    <span class="full">System Zero</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#capabilities">Capabilities</a></li>
+    <li><a href="#platforms">Platforms</a></li>
+    <li><a href="#domains">Domains</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <!-- Logo mark -->
+    <div class="logo-mark">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer ring -->
+        <circle cx="60" cy="60" r="56" stroke="#0a0a0a" stroke-width="1.5" stroke-dasharray="4 4">
+          <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="30s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Inner ring -->
+        <circle cx="60" cy="60" r="38" stroke="#0a0a0a" stroke-width="1" stroke-dasharray="2 6">
+          <animateTransform attributeName="transform" type="rotate" from="360 60 60" to="0 60 60" dur="18s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Orbiting triangle: centered at orbit top (60,4), tip pointing RIGHT = tangent for CW rotation -->
+        <!-- As the group rotates CW around (60,60), the tip always faces the direction of travel -->
+        <g>
+          <polygon points="65,4 55,0 55,8" fill="#0a0a0a">
+            <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="8s" repeatCount="indefinite"/>
+          </polygon>
+        </g>
+        <!-- Center S0 -->
+        <text x="60" y="64" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="800" fill="#0a0a0a" text-anchor="middle" letter-spacing="-1">S0</text>
+      </svg>
+    </div>
+
+    <p class="hero-eyebrow">Cognitive Robotics · Fleet Intelligence</p>
+
+    <h1 class="hero-title">
+      <span class="s0-big">S0</span>
+      <span class="system-zero">System Zero</span>
+    </h1>
+
+    <div class="typing-line">
+      <span class="prompt">$</span>
+      <span id="typewriter"></span><span class="cursor"></span>
+    </div>
+
+    <p class="hero-sub">
+      We build the brains of robots that do real work — autonomous systems that perceive, decide, act, and coordinate across the physical world.
+    </p>
+
+    <div class="hero-cta">
+      <a href="#capabilities" class="btn btn-primary">Explore</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="arrow"></div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="container">
+    <p class="section-label">Manifesto</p>
+    <p class="manifesto-text">
+      Every system has an initial state. <em>S0</em> is where everything begins — the blank slate before the first action, before the first reward signal, before the first decision. We start from zero so robots can become <em>capable of everything</em>.
+    </p>
+    <p class="manifesto-text" style="margin-top:2rem; font-size: clamp(1rem, 2.2vw, 1.45rem);">
+      Cognition isn't a feature. It's the foundation. We're not building actuators — we're building <em>minds</em>.
+    </p>
+
+    <!-- State machine viz -->
+    <div class="state-viz" id="stateMachine">
+      <div class="state-node s0">S0</div>
+      <span class="state-arrow" id="arr1">──→</span>
+      <div class="state-node" id="s1">S1</div>
+      <span class="state-arrow" id="arr2">──→</span>
+      <div class="state-node" id="s2">S2</div>
+      <span class="state-arrow" id="arr3">──→</span>
+      <div class="state-node" id="s3">S3</div>
+      <span class="state-arrow" id="arr4">──→</span>
+      <div class="state-node" id="s4">···</div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section id="capabilities">
+  <div class="container">
+    <p class="section-label fade-in">Core Capabilities</p>
+    <h2 class="section-title fade-in">What we build</h2>
+    <div class="caps-grid">
+      <div class="cap-item fade-in">
+        <p class="cap-number">01</p>
+        <span class="cap-icon">🧠</span>
+        <h3 class="cap-title">Cognitive Control</h3>
+        <p class="cap-desc">Deep learning architectures for real-time perception, world-modeling, and closed-loop decision making. Policy networks trained in simulation, deployed in reality.</p>
+      </div>
+      <div class="cap-item fade-in">
+        <p class="cap-number">02</p>
+        <span class="cap-icon">🔗</span>
+        <h3 class="cap-title">Fleet Coordination</h3>
+        <p class="cap-desc">Multi-agent orchestration across heterogeneous platforms. Decentralized task allocation, conflict resolution, and emergent collective behavior.</p>
+      </div>
+      <div class="cap-item fade-in">
+        <p class="cap-number">03</p>
+        <span class="cap-icon">🌍</span>
+        <h3 class="cap-title">Sim-to-Real Transfer</h3>
+        <p class="cap-desc">High-fidelity simulation pipelines with domain randomization. Policies that generalize. Zero-shot deployment into the physical world.</p>
+      </div>
+      <div class="cap-item fade-in">
+        <p class="cap-number">04</p>
+        <span class="cap-icon">⚡</span>
+        <h3 class="cap-title">Edge Inference</h3>
+        <p class="cap-desc">On-device neural execution optimized for robotics compute. Low-latency, power-efficient, safety-critical. No cloud dependency in the loop.</p>
+      </div>
+      <div class="cap-item fade-in">
+        <p class="cap-number">05</p>
+        <span class="cap-icon">📡</span>
+        <h3 class="cap-title">Sensor Fusion</h3>
+        <p class="cap-desc">Unified perception from LiDAR, RGB, depth, IMU, and proprioception. Robust state estimation under sensor noise and occlusion.</p>
+      </div>
+      <div class="cap-item fade-in">
+        <p class="cap-number">06</p>
+        <span class="cap-icon">🔄</span>
+        <h3 class="cap-title">Continuous Learning</h3>
+        <p class="cap-desc">Reinforcement learning pipelines for on-the-job improvement. Policies that adapt to task distribution shift without catastrophic forgetting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORMS -->
+<section id="platforms" class="platforms">
+  <div class="container">
+    <p class="section-label fade-in">Platforms</p>
+    <h2 class="section-title fade-in">Any body. Any task.</h2>
+    <div class="platforms-intro">
+      <p class="platforms-desc fade-in">
+        Our software stack is platform-agnostic by design. A single cognitive architecture governs limbs, rotors, wheels, and everything in between. The body is a peripheral. The mind is the product.
+      </p>
+      <div class="platform-list fade-in">
+        <div class="platform-item">
+          <span class="platform-icon">🚶</span>
+          <span class="platform-name">Humanoids</span>
+          <span class="platform-tag">Bipedal</span>
+        </div>
+        <div class="platform-item">
+          <span class="platform-icon">🐕</span>
+          <span class="platform-name">Quadrupeds</span>
+          <span class="platform-tag">Legged</span>
+        </div>
+        <div class="platform-item">
+          <span class="platform-icon">🚁</span>
+          <span class="platform-name">Drones</span>
+          <span class="platform-tag">Aerial</span>
+        </div>
+        <div class="platform-item">
+          <span class="platform-icon">🚜</span>
+          <span class="platform-name">Ground Vehicles</span>
+          <span class="platform-tag">Wheeled</span>
+        </div>
+        <div class="platform-item">
+          <span class="platform-icon">🦾</span>
+          <span class="platform-name">Manipulators</span>
+          <span class="platform-tag">Arm / Gripper</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLEET VISUALIZATION -->
+<section class="fleet-section">
+  <div class="container">
+    <p class="section-label">Fleet Intelligence</p>
+    <h2 class="section-title fade-in">Heterogeneous coordination</h2>
+    <div class="fleet-canvas-wrapper">
+      <canvas id="fleetCanvas"></canvas>
+    </div>
+    <p class="fleet-desc fade-in">
+      S0 manages fleets of mixed robot types operating toward shared objectives. Humanoids handle precision tasks; drones provide aerial scouting; quadrupeds navigate unstructured terrain. The fleet thinks together.
+    </p>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section id="domains">
+  <div class="container">
+    <p class="section-label fade-in">Domains</p>
+    <h2 class="section-title fade-in">Where we operate</h2>
+    <div class="domains-grid">
+      <div class="domain-card fade-in">
+        <div class="domain-icon">🌾</div>
+        <h3 class="domain-title">Agronomy</h3>
+        <p class="domain-desc">Autonomous crop monitoring, precision spraying, harvest assistance, and soil analysis across large-scale agricultural environments.</p>
+      </div>
+      <div class="domain-card fade-in">
+        <div class="domain-icon">🏭</div>
+        <h3 class="domain-title">Manufacturing</h3>
+        <p class="domain-desc">Flexible assembly, quality inspection, materials handling, and human-robot collaboration on production lines with changing specifications.</p>
+      </div>
+      <div class="domain-card fade-in">
+        <div class="domain-icon">🏗️</div>
+        <h3 class="domain-title">Infrastructure</h3>
+        <p class="domain-desc">Structural inspection, maintenance operations, and autonomous surveying for civil infrastructure, power grids, and industrial facilities.</p>
+      </div>
+      <div class="domain-card fade-in">
+        <div class="domain-icon">🌲</div>
+        <h3 class="domain-title">Environment</h3>
+        <p class="domain-desc">Monitoring of natural ecosystems, wildfire detection, reforestation assistance, and environmental data collection at scale.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPROACH -->
+<section id="approach" class="approach">
+  <div class="container">
+    <p class="section-label fade-in">How We Work</p>
+    <h2 class="section-title fade-in">Research-grade engineering</h2>
+    <div class="approach-grid">
+      <div class="approach-steps fade-in">
+        <div class="step">
+          <span class="step-num">01</span>
+          <div class="step-content">
+            <h4 class="step-title">Define the MDP</h4>
+            <p class="step-desc">Every deployment starts with rigorous formalization of the task as a Markov decision process — states, actions, rewards, and constraints.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">02</span>
+          <div class="step-content">
+            <h4 class="step-title">Simulate, iterate</h4>
+            <p class="step-desc">High-fidelity simulation with adversarial domain randomization. Policies are stress-tested before a single real actuator moves.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">03</span>
+          <div class="step-content">
+            <h4 class="step-title">Transfer & validate</h4>
+            <p class="step-desc">Structured sim-to-real transfer with progressive curriculum. Continuous validation loops against real-world edge cases.</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num">04</span>
+          <div class="step-content">
+            <h4 class="step-title">Deploy & improve</h4>
+            <p class="step-desc">On-device learning pipelines keep deployed policies sharp. The robot improves on the job, within safety constraints.</p>
+          </div>
+        </div>
+      </div>
+      <div class="ascii-block fade-in" id="asciiRobot">
+        ┌─────────────────────────┐
+        │  S0 :: POLICY ENGINE    │
+        ├─────────────────────────┤
+        │  state:  [obs]          │
+        │  action: [π(s)]         │
+        │  reward: r_t            │
+        │  t:      ████████░░  82%│
+        ├─────────────────────────┤
+        │  fleet: 4 nodes online  │
+        │  HMN ●  QDR ●           │
+        │  UAV ●  GND ●           │
+        ├─────────────────────────┤
+        │                         │
+        │    ___/\_               │
+        │   /  ●●  \  S0-HMN-01  │
+        │  |  ════  |             │
+        │   \      /              │
+        │   /|    |\              │
+        │  /_|    |_\             │
+        │                         │
+        │  status: ACTIVE         │
+        │  task:   INSPECT-7      │
+        │  pos:    [12.4, 8.1, 0] │
+        └─────────────────────────┘
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" class="cta-section">
+  <div class="container">
+    <p class="section-label fade-in" style="justify-content:center;">Contact</p>
+    <h2 class="section-title fade-in">
+      Ready to initialize?
+    </h2>
+    <p class="cta-sub fade-in">We're assembling the founding team and initial partnerships. If you're building serious robotics, let's talk.</p>
+    <div class="fade-in">
+      <a href="mailto:hello@systemzero.ai" class="btn btn-primary">hello@systemzero.ai</a>
+    </div>
+    <p class="cta-email fade-in" style="margin-top: 2rem;">
+      Research partners · Early customers · Talented engineers welcome
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">S0</span>
+  <ul class="footer-links">
+    <li><a href="#">Research</a></li>
+    <li><a href="#">Careers</a></li>
+    <li><a href="mailto:hello@systemzero.ai">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© 2025 System Zero. All rights reserved.</span>
+</footer>
+
+<script>
+// ─── NAV SCROLL ─────────────────────────────
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ─── TYPEWRITER ──────────────────────────────
+const lines = [
+  'initializing cognitive stack...',
+  'loading world model...',
+  'fleet online: 4/4 nodes',
+  'policy.forward(obs) → action',
+  'reward: +1.0 // task complete',
+  'building robot minds.',
+];
+let lineIdx = 0, charIdx = 0, deleting = false, tw = document.getElementById('typewriter');
+function type() {
+  const cur = lines[lineIdx];
+  if (!deleting) {
+    tw.textContent = cur.slice(0, ++charIdx);
+    if (charIdx === cur.length) {
+      deleting = true;
+      setTimeout(type, 2200);
+      return;
+    }
+  } else {
+    tw.textContent = cur.slice(0, --charIdx);
+    if (charIdx === 0) {
+      deleting = false;
+      lineIdx = (lineIdx + 1) % lines.length;
+    }
+  }
+  setTimeout(type, deleting ? 35 : 55);
+}
+type();
+
+// ─── FADE-IN OBSERVER ────────────────────────
+const faders = document.querySelectorAll('.fade-in');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), 80);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+faders.forEach(el => obs.observe(el));
+
+// ─── STATE MACHINE ANIMATION ─────────────────
+let activeState = 0;
+const states = ['s1','s2','s3','s4'];
+const arrows = ['arr1','arr2','arr3','arr4'];
+setInterval(() => {
+  states.forEach(id => document.getElementById(id).classList.remove('active'));
+  arrows.forEach(id => document.getElementById(id).classList.remove('active'));
+  if (activeState < states.length) {
+    for (let i = 0; i <= activeState; i++) {
+      document.getElementById(states[i]).classList.add('active');
+      document.getElementById(arrows[i]).classList.add('active');
+    }
+  }
+  activeState = (activeState + 1) % (states.length + 2);
+}, 800);
+
+// ─── FLEET CANVAS ────────────────────────────
+const canvas = document.getElementById('fleetCanvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const AGENTS = [
+  { label: 'HMN-01', emoji: '🚶', speed: 0.6, color: '#ffffff' },
+  { label: 'HMN-02', emoji: '🚶', speed: 0.5, color: '#ffffff' },
+  { label: 'QDR-01', emoji: '🐕', speed: 0.9, color: '#aaaaaa' },
+  { label: 'QDR-02', emoji: '🐕', speed: 1.0, color: '#aaaaaa' },
+  { label: 'UAV-01', emoji: '🚁', speed: 1.4, color: '#666666' },
+  { label: 'UAV-02', emoji: '🚁', speed: 1.6, color: '#666666' },
+  { label: 'GND-01', emoji: '🚜', speed: 0.4, color: '#888888' },
+];
+
+// Initialize positions
+const agents = AGENTS.map((a, i) => ({
+  ...a,
+  x: 80 + (i / AGENTS.length) * (canvas.width - 160),
+  y: 80 + Math.random() * (canvas.height - 160),
+  vx: (Math.random() - 0.5) * a.speed,
+  vy: (Math.random() - 0.5) * a.speed,
+  target: null,
+  connectTo: [],
+}));
+
+// Shared target (objective)
+const objectives = [
+  { x: 0.3, y: 0.5 },
+  { x: 0.7, y: 0.3 },
+  { x: 0.5, y: 0.7 },
+];
+let objIdx = 0, objTimer = 0;
+
+function fleetTick() {
+  if (!canvas.width) return;
+  const W = canvas.width, H = canvas.height;
+  const obj = objectives[objIdx];
+  const tx = obj.x * W, ty = obj.y * H;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Background grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += 40) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Objective marker
+  ctx.beginPath();
+  ctx.arc(tx, ty, 8, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(tx, ty, 18, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+  ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,0.1)';
+  ctx.fill();
+
+  // Move agents toward objective with flocking
+  agents.forEach((a, i) => {
+    const dx = tx - a.x, dy = ty - a.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    // Attraction to objective
+    if (dist > 30) {
+      a.vx += (dx / dist) * 0.04 * a.speed;
+      a.vy += (dy / dist) * 0.04 * a.speed;
+    }
+    // Separation from other agents
+    agents.forEach((b, j) => {
+      if (i === j) return;
+      const sx = a.x - b.x, sy = a.y - b.y;
+      const sd = Math.sqrt(sx*sx + sy*sy);
+      if (sd < 60) {
+        a.vx += (sx / sd) * 0.08;
+        a.vy += (sy / sd) * 0.08;
+      }
+    });
+    // Clamp speed
+    const spd = Math.sqrt(a.vx*a.vx + a.vy*a.vy);
+    const maxSpd = a.speed * 1.2;
+    if (spd > maxSpd) { a.vx = (a.vx/spd)*maxSpd; a.vy = (a.vy/spd)*maxSpd; }
+    // Bounce
+    a.x += a.vx; a.y += a.vy;
+    if (a.x < 20) { a.x = 20; a.vx *= -1; }
+    if (a.x > W-20) { a.x = W-20; a.vx *= -1; }
+    if (a.y < 20) { a.y = 20; a.vy *= -1; }
+    if (a.y > H-20) { a.y = H-20; a.vy *= -1; }
+  });
+
+  // Draw comm lines
+  agents.forEach((a, i) => {
+    agents.forEach((b, j) => {
+      if (j <= i) return;
+      const d = Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
+      if (d < 160) {
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(255,255,255,${0.12 * (1 - d/160)})`;
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    });
+  });
+
+  // Draw agents
+  agents.forEach(a => {
+    // Glow
+    const grad = ctx.createRadialGradient(a.x, a.y, 0, a.x, a.y, 18);
+    grad.addColorStop(0, 'rgba(255,255,255,0.12)');
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.beginPath();
+    ctx.arc(a.x, a.y, 18, 0, Math.PI*2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(a.x, a.y, 4, 0, Math.PI*2);
+    ctx.fillStyle = a.color;
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '9px JetBrains Mono, monospace';
+    ctx.fillText(a.label, a.x + 8, a.y - 8);
+  });
+
+  // Rotate objectives
+  objTimer++;
+  if (objTimer > 180) { objTimer = 0; objIdx = (objIdx + 1) % objectives.length; }
+
+  requestAnimationFrame(fleetTick);
+}
+fleetTick();
+</script>
+</body>
+</html>
