@@ -792,6 +792,13 @@
     /* Larger icons for capabilities */
     .cap-icon-lg svg { width:44px; height:44px; stroke-width:2.2; }
 
+
+    /* Card top bar + subtle icon animation (match Where we operate) */
+    .cap-item, .domain-card, .platform-item { position: relative; overflow: hidden; }
+    .cap-item::before, .domain-card::before { content: ''; position: absolute; left:0; right:0; top:0; height:4px; background:#0a0a0a; opacity:0.07; }
+    .cap-item .cap-icon, .domain-card .domain-icon { display:block; width:28px; height:28px; transition: transform .28s ease, opacity .28s ease, filter .28s ease; opacity:0.95; }
+    .cap-item:hover .cap-icon, .domain-card:hover .domain-icon { transform: translateY(-6px) scale(1.06); filter: drop-shadow(0 10px 20px rgba(10,10,10,0.06)); opacity:1; }
+
 </style>
 </head>
 <body>
