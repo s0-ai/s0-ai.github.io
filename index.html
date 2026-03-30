@@ -389,15 +389,13 @@
     .caps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 0;
-      border: 1px solid var(--border);
+      gap: 2rem;
       margin-top: 3rem;
     }
 
     .cap-item {
       padding: 2.5rem;
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
+      border: 1px solid var(--border);
       position: relative;
       overflow: hidden;
       transition: background 0.2s;
@@ -577,7 +575,6 @@
       padding-top: 0.15rem;
       min-width: 2.5rem;
     }
-    .step-content {}
     .step-title {
       font-size: 0.95rem;
       font-weight: 700;
@@ -784,18 +781,19 @@
     .typing-line .prompt { color: var(--fg); font-weight: 700; }
   
     /* Icon modern effects */
-    .icon-wrap svg { transition: transform 0.18s ease, filter 0.18s ease, color 0.18s ease; display:inline-block; vertical-align: middle; }
-    .platform-item:hover .icon-wrap svg, .cap-item:hover svg, .domain-card:hover svg { transform: translateY(-3px) scale(1.06); filter: drop-shadow(0 8px 18px rgba(10,10,10,0.06)); }
-    .icon-wrap svg { color: currentColor; }
+    .icon-wrap svg, .icon-wrap .lucide { width: 1.35rem; height: 1.35rem; transition: transform 0.18s ease, filter 0.18s ease, color 0.18s ease; display:inline-block; vertical-align: middle; }
+    .platform-item:hover .icon-wrap svg, .platform-item:hover .icon-wrap .lucide, .cap-item:hover svg, .cap-item:hover .lucide, .domain-card:hover svg, .domain-card:hover .lucide { transform: translateY(-3px) scale(1.06); filter: drop-shadow(0 8px 18px rgba(10,10,10,0.06)); }
+    .icon-wrap svg, .icon-wrap .lucide { color: currentColor; }
 
 
-    /* Larger icons for capabilities */
-    .cap-icon-lg svg { width:44px; height:44px; stroke-width:2.2; }
+    /* Capabilities icons match Domains sizing */
+    .cap-icon-lg svg, .cap-icon-lg .lucide { width:28px; height:28px; stroke-width:2; }
 
 
     /* Card top bar + subtle icon animation (match Where we operate) */
     .cap-item, .domain-card, .platform-item { position: relative; overflow: hidden; }
-    .cap-item::before, .domain-card::before { content: ''; position: absolute; left:0; right:0; top:0; height:4px; background:#000; opacity:1; }
+    .cap-item::before { content: ''; position: absolute; left:0; right:0; top:0; height:2px; background: var(--fg); transform: scaleX(0); transform-origin: left; transition: transform 0.3s ease; }
+    .cap-item:hover::before { transform: scaleX(1); }
     .cap-item .cap-icon, .domain-card .domain-icon { display:block; width:28px; height:28px; transition: transform .28s ease, opacity .28s ease, filter .28s ease; opacity:0.95; }
     .cap-item:hover .cap-icon, .domain-card:hover .domain-icon { transform: translateY(-6px) scale(1.06); filter: drop-shadow(0 10px 20px rgba(10,10,10,0.06)); opacity:1; }
 
@@ -906,37 +904,37 @@
     <div class="caps-grid">
       <div class="cap-item fade-in cap-icon-lg">
         <p class="cap-number">01</p>
-        <span class="cap-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2 0 3 1 3 3v1c2 0 4 2 4 4s-2 4-4 4h-1v3h-4v-3h-1c-2 0-4-2-4-4s2-4 4-4V5c0-2 1-3 3-3z"/></svg></span>
+        <span class="cap-icon"><i data-lucide="brain"></i></span>
         <h3 class="cap-title">Cognitive Control</h3>
         <p class="cap-desc">Deep learning architectures for real-time perception, world-modeling, and closed-loop decision making. Policy networks trained in simulation, deployed in reality.</p>
       </div>
       <div class="cap-item fade-in cap-icon-lg">
         <p class="cap-number">02</p>
-        <span class="cap-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14c-1.657 0-3-1.343-3-3s1.343-3 3-3h2"/><path d="M14 10c1.657 0 3 1.343 3 3s-1.343 3-3 3h-2"/><path d="M12 12v0"/></svg></span>
+        <span class="cap-icon"><i data-lucide="network"></i></span>
         <h3 class="cap-title">Fleet Coordination</h3>
         <p class="cap-desc">Multi-agent orchestration across heterogeneous platforms. Decentralized task allocation, conflict resolution, and emergent collective behavior.</p>
       </div>
       <div class="cap-item fade-in cap-icon-lg">
         <p class="cap-number">03</p>
-        <span class="cap-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2v20M4.5 4.5l15 15M19.5 4.5l-15 15"/></svg></span>
+        <span class="cap-icon"><i data-lucide="layers"></i></span>
         <h3 class="cap-title">Sim-to-Real Transfer</h3>
         <p class="cap-desc">High-fidelity simulation pipelines with domain randomization. Policies that generalize. Zero-shot deployment into the physical world.</p>
       </div>
       <div class="cap-item fade-in cap-icon-lg">
         <p class="cap-number">04</p>
-        <span class="cap-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
+        <span class="cap-icon"><i data-lucide="cpu"></i></span>
         <h3 class="cap-title">Edge Inference</h3>
         <p class="cap-desc">On-device neural execution optimized for robotics compute. Low-latency, power-efficient, safety-critical. No cloud dependency in the loop.</p>
       </div>
       <div class="cap-item fade-in cap-icon-lg">
         <p class="cap-number">05</p>
-        <span class="cap-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c3-3 7-3 10 0M6 12c2-2 5-2 7 0"/><path d="M12 20v-4"/><circle cx="12" cy="6" r="2"/></svg></span>
+        <span class="cap-icon"><i data-lucide="scan"></i></span>
         <h3 class="cap-title">Sensor Fusion</h3>
         <p class="cap-desc">Unified perception from LiDAR, RGB, depth, IMU, and proprioception. Robust state estimation under sensor noise and occlusion.</p>
       </div>
       <div class="cap-item fade-in cap-icon-lg">
         <p class="cap-number">06</p>
-        <span class="cap-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 10-3 6.7L21 12z"/><path d="M3 12a9 9 0 003-6.7L3 12z"/></svg></span>
+        <span class="cap-icon"><i data-lucide="refresh-cw"></i></span>
         <h3 class="cap-title">Continuous Learning</h3>
         <p class="cap-desc">Reinforcement learning pipelines for on-the-job improvement. Policies that adapt to task distribution shift without catastrophic forgetting.</p>
       </div>
@@ -955,27 +953,27 @@
       </p>
       <div class="platform-list fade-in">
         <div class="platform-item">
-          <span class="platform-icon icon-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v4"/><path d="M9 12l6 8"/><path d="M9 12h4"/></svg></span>
+          <span class="platform-icon icon-wrap"><i data-lucide="user"></i></span>
           <span class="platform-name">Humanoids</span>
           <span class="platform-tag">Bipedal</span>
         </div>
         <div class="platform-item">
-          <span class="platform-icon icon-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13v3a3 3 0 003 3h6"/><path d="M3 9c1-2 3-3 5-3s4 1 5 3"/><path d="M19 7l1-2 1 0"/></svg></span>
+          <span class="platform-icon icon-wrap"><i data-lucide="paw-print"></i></span>
           <span class="platform-name">Quadrupeds</span>
           <span class="platform-tag">Legged</span>
         </div>
         <div class="platform-item">
-          <span class="platform-icon icon-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12"/><path d="M12 2v6"/><rect x="7" y="8" width="10" height="6" rx="1"/><path d="M4 18h16"/></svg></span>
+          <span class="platform-icon icon-wrap"><i data-lucide="plane"></i></span>
           <span class="platform-name">Drones</span>
           <span class="platform-tag">Aerial</span>
         </div>
         <div class="platform-item">
-          <span class="platform-icon icon-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="12" width="14" height="6" rx="1"/><circle cx="19" cy="18" r="2"/><path d="M6 12V8h6"/></svg></span>
+          <span class="platform-icon icon-wrap"><i data-lucide="truck"></i></span>
           <span class="platform-name">Ground Vehicles</span>
           <span class="platform-tag">Wheeled</span>
         </div>
         <div class="platform-item">
-          <span class="platform-icon icon-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="12" height="6" rx="1"/><path d="M15 13l5-5"/><path d="M15 17l5-5"/></svg></span>
+          <span class="platform-icon icon-wrap"><i data-lucide="hand"></i></span>
           <span class="platform-name">Manipulators</span>
           <span class="platform-tag">Arm / Gripper</span>
         </div>
@@ -1005,22 +1003,22 @@
     <h2 class="section-title fade-in">Where we operate</h2>
     <div class="domains-grid">
       <div class="domain-card fade-in">
-        <div class="domain-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M6 7c3 1 4 3 4 3"/><path d="M6 11c3 1 4 3 4 3"/><path d="M18 7c-3 1-4 3-4 3"/></svg></div>
+        <div class="domain-icon"><i data-lucide="sprout"></i></div>
         <h3 class="domain-title">Agronomy</h3>
         <p class="domain-desc">Autonomous crop monitoring, precision spraying, harvest assistance, and soil analysis across large-scale agricultural environments.</p>
       </div>
       <div class="domain-card fade-in">
-        <div class="domain-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="10" width="20" height="10" rx="1"/><path d="M6 10v-3l3 2 3-2v3"/></svg></div>
+        <div class="domain-icon"><i data-lucide="factory"></i></div>
         <h3 class="domain-title">Manufacturing</h3>
         <p class="domain-desc">Flexible assembly, quality inspection, materials handling, and human-robot collaboration on production lines with changing specifications.</p>
       </div>
       <div class="domain-card fade-in">
-        <div class="domain-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6 21V10"/><path d="M10 21V6"/><path d="M14 21V8"/><path d="M18 21V12"/></svg></div>
+        <div class="domain-icon"><i data-lucide="building-2"></i></div>
         <h3 class="domain-title">Infrastructure</h3>
         <p class="domain-desc">Structural inspection, maintenance operations, and autonomous surveying for civil infrastructure, power grids, and industrial facilities.</p>
       </div>
       <div class="domain-card fade-in">
-        <div class="domain-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l4 6h-3l2 4-5-3-5 3 2-4H8l4-6z"/><path d="M11 18h2v4h-2z"/></svg></div>
+        <div class="domain-icon"><i data-lucide="trees"></i></div>
         <h3 class="domain-title">Environment</h3>
         <p class="domain-desc">Monitoring of natural ecosystems, wildfire detection, reforestation assistance, and environmental data collection at scale.</p>
       </div>
@@ -1336,5 +1334,7 @@ function fleetTick() {
 }
 fleetTick();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
 </body>
 </html>
